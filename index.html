@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neel Patel | Portfolio</title>
+    <title>Neel Patel | Frontend Engineer & Digital Creator Portfolio</title>
+    <!-- Linking the separate CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- INTERACTIVE ENTRY SPLASH SCREEN -->
+    <div id="welcome-screen">
+        <button id="welcome-btn">Enter Experience</button>
+    </div>
+    <div id="flash-overlay"></div>
+
+    <!-- GLOBAL DUST PARTICLE CANVAS BACKGROUND -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- FIRESTONE PROFILE POP-UP OVERLAY -->
+    <div class="profile-modal-backdrop" id="profile-modal">
+        <canvas id="firestone-canvas"></canvas>
+        <div class="profile-central-card">
+            <button class="close-modal-btn" id="close-modal">✕</button>
+            <div class="modal-avatar-box">
+                <img src="N.jpg" alt="Neel Patel Profile Portrait">
+            </div>
+            <div class="modal-details">
+                <h2>Neel Patel</h2>
+                <div class="subtitle">Computer Applications</div>
+                <p>
+                Hi, I'm Neel, a 21-year-old BCA graduate who is interested in technology and learning new things. I chose BCA because I wanted to learn about computers and build a strong foundation in the IT field. I enjoy exploring new technologies, improving my skills, and working towards a successful career in the IT industry.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION HEADER -->
+    <header>
+        <nav>
+            <!-- Locate this in your header nav section -->
+<div class="logo">
+    <a href="#hero" id="logo-home-link"><span>Neel</span></a>
+</div>
+            <ul class="nav-links">
+                <li><a href="#hero">Aura</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#skills-unlock-zone">Skills</a></li>
+                <li><a href="#hobbies">Interests</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- MAIN WEBSITE CONTENT CONTAINER -->
+    <main>
+        <!-- 1. HERO VIEWPORT MAIN SECTION -->
+        <section id="hero">
+            <div class="hero-banner-frame" id="hero-trigger-box">
+                <img src="4.jpg" alt="Neel Patel Banner Visual" class="hero-img">
+                <canvas id="hero-lightning-canvas"></canvas>
+            </div>
+        </section>
+
+        <!-- 2. ACADEMIC CREDENTIALS -->
+        <section id="education">
+            <h2 class="section-title">Career Path</h2>
+            <div class="edu-grid">
+                <!-- BCA CARD -->
+                <div class="edu-card" data-edu-target="modal-bca">
+                    <div class="edu-header">
+                        <h3>Bachelor of Computer Applications (BCA)</h3>
+                    </div>
+                    <p class="edu-school">Undergraduate Program</p>
+                </div>
+
+                <!-- 12th CARD -->
+                <div class="edu-card" data-edu-target="modal-12th">
+                    <div class="edu-header">
+                        <h3>Higher Secondary School (12th)</h3>
+                        <span class="edu-date">2022</span>
+                    </div>
+                    <p class="edu-school">Commerce Stream</p>
+                </div>
+
+                <!-- 10th CARD -->
+                <div class="edu-card" data-edu-target="modal-10th">
+                    <div class="edu-header">
+                        <h3>Secondary School (10th)</h3>
+                        <span class="edu-date">2020</span>
+                    </div>
+                    <p class="edu-school">Gujarat Secondary Education Board</p>
+                </div>
+            </div>
+
+            <!-- CENTRAL TIMELINE DETAIL MODALS OVERLAY SYSTEM -->
+            <div class="edu-modal-backdrop" id="edu-details-overlay">
+                <canvas id="edu-fireflash-canvas"></canvas>
+                
+                <!-- BCA DETAILS BOX -->
+                <div class="edu-details-card" id="modal-bca">
+                    <button class="close-edu-modal">✕</button>
+                    <div class="edu-modal-badge">BACHELOR'S DEGREE</div>
+                    <h2>Bachelor of Computer Applications</h2>
+                    <hr class="edu-divider">
+                    <div class="edu-extended-info">
+                        <div class="edu-info-row"><strong>Institution:</strong> <span>Kadi Sarva Vishwavidyalaya</span></div>
+                        <div class="edu-info-row"><strong>Timeline:</strong> <span>2022 - 2025</span></div>
+                        <div class="edu-info-row"><strong>Core Subjects:</strong> <span>Programming, DBMS, Computer Networks</span></div>
+                        <div class="edu-info-row"><strong>Status:</strong> <span>Completed</span></div>
+                        <div class="edu-info-row"><strong>CGPA:</strong> <span>7.29</span></div>
+                    </div>
+                </div>
+
+                <!-- 12TH DETAILS BOX -->
+                <div class="edu-details-card" id="modal-12th">
+                    <button class="close-edu-modal">✕</button>
+                    <div class="edu-modal-badge">HSC Core</div>
+                    <h2>Higher Secondary School</h2>
+                    <hr class="edu-divider">
+                    <div class="edu-extended-info">
+                        <div class="edu-info-row"><strong>School Name:</strong> <span>Satyam Vidhyalay</span></div>
+                        <div class="edu-info-row"><strong>Year:</strong> <span>2022</span></div>
+                        <div class="edu-info-row"><strong>Final Marks:</strong> <span class="highlight-metric">58.57% (Grade A1)</span></div>
+                    </div>
+                </div>
+
+                <!-- 10TH DETAILS BOX -->
+                <div class="edu-details-card" id="modal-10th">
+                    <button class="close-edu-modal">✕</button>
+                    <div class="edu-modal-badge">SSC Core</div>
+                    <h2>Secondary School</h2>
+                    <hr class="edu-divider">
+                    <div class="edu-extended-info">
+                        <div class="edu-info-row"><strong>School Name:</strong> <span>Satyam Vidhyalay</span></div>
+                        <div class="edu-info-row"><strong>Year:</strong> <span>2020</span></div>
+                        <div class="edu-info-row"><strong>Final Marks:</strong> <span class="highlight-metric">71.96% (Grade A1)</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. DECRYPTABLE TECHNICAL CAPABILITIES -->
+        <section id="skills-unlock-zone">
+            <h2 class="section-title">Technical Expertise</h2>
+            <p class="skills-hint">Every skill unlocked is another step toward greatness.</p>
+            <div class="skills-container">
+                <div class="skill-node hidden-node">HTML & CSS</div>
+                <div class="skill-node hidden-node">JavaScript</div>
+                <div class="skill-node hidden-node">Python</div>
+                <div class="skill-node hidden-node">Basic Computer Operations</div>
+                <div class="skill-node hidden-node">DBMS</div>
+                <div class="skill-node hidden-node">C++</div>
+            </div>
+        </section>
+
+        <!-- 4. SOFT SKILLS & CORE ATTRIBUTES -->
+        <section id="soft-skills">
+            <h2 class="section-title">Soft Skills</h2>
+            <div class="soft-skills-grid">
+                <div class="soft-card">
+                    <div class="soft-icon">⚡</div>
+                    <h3>Time Management</h3>
+                    <p>Balancing multiple responsibilities, maintaining focus, and ensuring timely completion of goals.</p>
+                </div>
+                <div class="soft-card">
+                    <div class="soft-icon">🎯</div>
+                    <h3>Strategic Planning</h3>
+                    <p>Setting specific targets, executing milestone roadmaps, and analyzing performance data to scale projects effectively.</p>
+                </div>
+                <div class="soft-card">
+                    <div class="soft-icon">🗣️</div>
+                    <h3>Communication</h3>
+                    <p>Building strong relationships through clear communication, active listening, and teamwork.</p>
+                </div>
+                <div class="soft-card">
+                    <div class="soft-icon">👁️</div>
+                    <h3>Problem Solving</h3>
+                    <p>Breaking down complex problems, thinking critically, and finding practical solutions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. HOBBIES & INTERESTS -->
+        <section id="hobbies">
+            <h2 class="section-title">Personal Interests</h2>
+            <div class="hobbies-container">
+                <div class="hobby-item">
+                    <div class="hobby-meta">
+                        <span class="hobby-tag">Tech & Cybersecurity</span>
+                        <h3>Cybersecurity Learning</h3>
+                    </div>
+                    <p>Researching cyber threats, understanding security fundamentals, and developing practical cybersecurity knowledge.</p>
+                </div>
+                <div class="hobby-item">
+                    <div class="hobby-meta">
+                        <span class="hobby-tag">Continuous Learning</span>
+                        <h3>Reading Books</h3>
+                    </div>
+                    <p>Reading books on technology, finance, and self-development to support continuous learning and growth.</p>
+                </div>
+                <div class="hobby-item">
+                    <div class="hobby-meta">
+                        <span class="hobby-tag">Music</span>
+                        <h3>Listening to Music</h3>
+                    </div>
+                    <p>Exploring iconic music, appreciating legendary performances, and finding inspiration through timeless artistry.</p>
+                </div>
+            </div>
+        </section>
+        <!-- ==========================================
+     DOWNLOAD RESUME SECTION
+     ========================================== -->
+<section id="resume-download" class="reveal-active">
+    <h2 class="section-title">Resume</h2>
+    <div class="resume-container">
+        <p class="resume-text">
+            BCA graduate with a strong interest in technology, cybersecurity, and continuous learning. Passionate about developing technical knowledge and building a successful career in the IT industry.
+        </p>
+        
+        <!-- Replace 'path/to/your-resume.pdf' with your actual PDF path -->
+        <a href="https://drive.google.com/file/d/1R6jtSuXGmJh_wEBOeUiEFAM2En21CKR2/view?usp=sharing" download="Neel_Patel_Resume" class="download-resume-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
+            </svg>
+            Download Resume
+        </a>
+    </div>
+</section>
+
+        <!-- 6. CONTACT CHANNELS -->
+        <section id="contact">
+            <h2 class="section-title">Reach Out</h2>
+            <div class="contact-links">
+                <a href="mailto:yourmail@domain.com">neelpatel23500gmail.com</a>
+        </section>
+    </main>
+
+    <footer>
+        <div>© 2026 Neel Patel. Computer Applications</div>
+        <div>Digital Portfolio</div>
+        <div>Build by: HTML, CSS, JS</div>
+    </footer>
+
+    <!-- Linking the separate JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>

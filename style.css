@@ -1,0 +1,821 @@
+/* ==========================================================================
+   1. GLOBAL RESET & DESIGN VARIABLES
+   ========================================================================== */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+:root {
+    --bg-dark: #060502;
+    --bg-card: rgba(18, 15, 10, 0.75);
+    --text-light: #fdfaf4;
+    --text-muted: #a69e90;
+    --amber-glow: #ffb700;
+    --amber-bright: #ffe699;
+    --border-glow: rgba(255, 183, 0, 0.15);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Page Interaction Lock Until Ready */
+header, main, footer { 
+    pointer-events: none; 
+}
+
+body.ready header, 
+body.ready main, 
+body.ready footer { 
+    pointer-events: auto; 
+}
+
+/* ==========================================================================
+   2. BACKGROUND ATMOSPHERE ENGINE
+   ========================================================================== */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.page-blur-active main,
+.page-blur-active header {
+    filter: blur(15px);
+    transition: filter 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ==========================================================================
+   3. INTERACTIVE ENTRY SPLASH SCREEN
+   ========================================================================== */
+#welcome-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+}
+
+#welcome-btn {
+    background: #ffffff;
+    color: #000;
+    border: none;
+    padding: 1.2rem 3rem;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(255, 183, 0, 0.2);
+    transition: all 0.4s ease;
+}
+
+#welcome-btn:hover {
+    background: var(--amber-glow);
+    box-shadow: 0 0 40px var(--amber-glow);
+    transform: scale(1.05);
+}
+
+#flash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+.flash-bang {
+    animation: triggerFlash 0.6s ease-out forwards;
+}
+
+@keyframes triggerFlash {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* ==========================================================================
+   4. NAVIGATION HEADER
+   ========================================================================== */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-glow);
+    z-index: 100;
+    transition: filter 0.3s ease;
+}
+
+nav {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2rem;
+}
+
+.logo { font-weight: 800; letter-spacing: 2px; font-size: 1.2rem; }
+.logo span { color: var(--amber-glow); }
+.nav-links { display: flex; list-style: none; gap: 2rem; }
+.nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--amber-glow); }
+/* Keeps the logo link clean and unstyled */
+.logo a {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: text-shadow 0.3s ease;
+}
+
+/* Optional: Adds a subtle amber aura glow when hovering over the logo */
+.logo a:hover {
+    text-shadow: 0 0 10px var(--amber-glow);
+}
+
+/* ==========================================================================
+   5. STRUCTURAL WRAPPERS & SECTIONS
+   ========================================================================== */
+main {
+    padding-top: 5rem;
+    transition: filter 0.3s ease;
+}
+
+section {
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    border-bottom: 1px solid var(--border-glow);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+section.reveal-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-title {
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 2.5rem;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--amber-glow);
+}
+
+/* ==========================================================================
+   6. HERO BANNER LAYER
+   ========================================================================== */
+#hero {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-banner-frame {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 450px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 183, 0, 0.2);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s;
+}
+
+.hero-banner-frame:hover {
+    transform: scale(1.015);
+    border-color: var(--amber-glow);
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#hero-lightning-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   7. PROFILE FIRESTONE MODAL SYSTEM
+   ========================================================================== */
+.profile-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 3, 1, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 10050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-modal-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#firestone-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.profile-central-card {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 720px;
+    background: #0d0b07;
+    border: 2px solid var(--amber-glow);
+    border-radius: 12px;
+    padding: 3.5rem 3rem;
+    box-shadow: 0 0 60px rgba(255, 183, 0, 0.3);
+    transform: scale(0.85) translateY(40px);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.profile-modal-backdrop.active .profile-central-card {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.modal-avatar-box {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--amber-glow);
+    box-shadow: 0 0 25px rgba(255, 183, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.modal-avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-details {
+    flex: 1;
+}
+
+.modal-details h2 {
+    font-size: 2.4rem;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+}
+
+.modal-details .subtitle {
+    color: var(--amber-glow);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+}
+
+.modal-details p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.close-modal-btn:hover {
+    color: var(--amber-glow);
+    transform: rotate(90deg);
+}
+
+/* ==========================================================================
+   8. INTERACTIVE EDUCATION ENGINE
+   ========================================================================== */
+.edu-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important; 
+    gap: 1.5rem; 
+}
+
+.edu-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    padding: 2.2rem;
+    border-radius: 6px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s;
+}
+
+.edu-card:hover { 
+    transform: translateY(-3px); 
+    border-color: var(--amber-glow); 
+}
+
+.edu-card::before {
+    content: 'Click to Reveal Metrics ⚡';
+    position: absolute;
+    bottom: 0; left: 0; width: 100%;
+    background: linear-gradient(transparent, rgba(255, 183, 0, 0.15));
+    color: var(--amber-glow);
+    font-size: 0.7rem;
+    text-align: center;
+    padding: 0.4rem 0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.edu-card:hover::before {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.edu-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: baseline; 
+    margin-bottom: 0.4rem; 
+}
+
+.edu-date { 
+    color: var(--amber-glow); 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+}
+
+.edu-school { 
+    color: var(--text-muted); 
+    margin-bottom: 1.5rem; 
+    font-size: 0.95rem; 
+}
+
+.metric-container { 
+    display: flex; 
+    gap: 0.8rem; 
+}
+
+.metric-pill { 
+    background: rgba(255, 255, 255, 0.03); 
+    border: 1px solid rgba(255, 255, 255, 0.06); 
+    padding: 0.4rem 0.8rem; 
+    border-radius: 4px; 
+    font-size: 0.8rem; 
+    letter-spacing: 1px; 
+}
+
+.metric-pill span { 
+    color: var(--amber-glow); 
+    font-weight: 700; 
+    text-shadow: 0 0 8px rgba(255,183,0,0.4); 
+}
+
+/* Education Details Overlays Setup */
+.edu-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(5, 4, 1, 0.88);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    z-index: 10100;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.edu-modal-backdrop.edu-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#edu-fireflash-canvas {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.edu-details-card {
+    position: relative;
+    z-index: 5;
+    background: #0b0905;
+    border: 2px solid var(--amber-glow);
+    border-radius: 12px;
+    padding: 3rem;
+    width: 90%;
+    max-width: 580px;
+    box-shadow: 0 0 50px rgba(255, 183, 0, 0.25);
+    display: none;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.edu-modal-backdrop.edu-active .edu-details-card.card-visible {
+    display: block;
+    animation: eduCardPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes eduCardPop {
+    to { transform: scale(1) translateY(0); }
+}
+
+.edu-modal-badge {
+    background: rgba(255, 183, 0, 0.1);
+    border: 1px solid var(--border-glow);
+    color: var(--amber-glow);
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    width: max-content;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+}
+
+.edu-details-card h2 {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+
+.edu-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, var(--amber-glow), transparent);
+    margin: 1.5rem 0;
+}
+
+.edu-extended-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.edu-info-row {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.edu-info-row strong {
+    color: var(--amber-glow);
+    display: inline-block;
+    width: 140px;
+    letter-spacing: 0.5px;
+}
+
+.edu-info-row span {
+    color: var(--text-light);
+}
+
+.edu-info-row span.highlight-metric {
+    color: var(--amber-bright);
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(255, 183, 0, 0.5);
+}
+
+.close-edu-modal {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: none; border: none;
+    color: var(--text-muted);
+    font-size: 1.3rem; cursor: pointer;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.close-edu-modal:hover {
+    color: var(--amber-glow);
+    transform: rotate(90deg);
+}
+
+/* ==========================================================================
+   9. DECRYPTABLE TECHNICAL MATRIX
+   ========================================================================== */
+.skills-hint { color: var(--amber-glow); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; opacity: 0.8; }
+#skills-unlock-zone { cursor: pointer; }
+.skills-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+.skill-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    padding: 1rem;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.skill-node.hidden-node { color: transparent !important; border-style: dashed; border-color: rgba(255, 255, 255, 0.08); background: rgba(0, 0, 0, 0.3); }
+.skill-node.unlocked-node { color: var(--text-light); border-style: solid; border-color: var(--amber-glow); box-shadow: 0 0 15px rgba(255, 183, 0, 0.15); }
+
+.skills-dark-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(6, 5, 2, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 10002;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+.skills-dark-backdrop.active { opacity: 1; }
+
+.flying-skill-card {
+    position: fixed;
+    z-index: 10005;
+    background: #0f0d08;
+    border: 2px solid var(--amber-glow) !important;
+    color: var(--text-light) !important;
+    border-radius: 4px;
+    box-shadow: 0 0 40px rgba(255, 183, 0, 0.4);
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.skill-node.ghost-state { opacity: 0.1; color: transparent !important; }
+
+/* ==========================================================================
+   10. SOFT SKILLS BLOCK ATTACHMENTS
+   ========================================================================== */
+.soft-skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+.soft-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    padding: 2rem;
+    border-radius: 8px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.soft-card:hover {
+    border-color: var(--amber-glow);
+    transform: translateY(-2px);
+}
+.soft-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    text-shadow: 0 0 10px var(--amber-glow);
+}
+.soft-card h3 {
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+.soft-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   11. HOBBIES & TIMELINE LISTS
+   ========================================================================== */
+.hobbies-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.hobby-item {
+    background: rgba(18, 15, 10, 0.4);
+    border-left: 3px solid var(--border-glow);
+    padding: 1.5rem 2rem;
+    border-radius: 0 8px 8px 0;
+    transition: all 0.3s ease;
+}
+.hobby-item:hover {
+    border-left-color: var(--amber-glow);
+    background: var(--bg-card);
+    padding-left: 2.2rem;
+}
+.hobby-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 0.4rem;
+}
+.hobby-tag {
+    background: rgba(255, 183, 0, 0.1);
+    border: 1px solid var(--border-glow);
+    color: var(--amber-glow);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 700;
+}
+.hobby-item h3 {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    letter-spacing: 0.5px;
+}
+.hobby-item p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   12. CONTACT LINKS & FOOTER
+   ========================================================================== */
+.contact-links { display: flex; flex-direction: column; gap: 1rem; }
+.contact-links a { color: var(--text-muted); text-decoration: none; font-size: 1.1rem; width: max-content; transition: color 0.3s; }
+.contact-links a:hover { color: var(--amber-glow); }
+
+footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-glow);
+}
+/* ==========================================================================
+   12b. DOWNLOAD RESUME INTERACTIVE ZONE
+   ========================================================================== */
+   .resume-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.resume-text {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 600px;
+}
+
+.download-resume-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: transparent;
+    color: var(--amber-glow);
+    border: 2px solid var(--border-glow);
+    padding: 1rem 2.2rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.download-resume-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 183, 0, 0.1), transparent);
+    transition: all 0.6s ease;
+}
+
+.download-resume-btn:hover {
+    color: #000;
+    background: var(--amber-glow);
+    border-color: var(--amber-glow);
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(255, 183, 0, 0.4);
+}
+
+.download-resume-btn:hover::before {
+    left: 100%;
+}
+
+.download-resume-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.download-resume-btn:hover svg {
+    transform: translateY(2px);
+}
+/* ==========================================================================
+   13. MEDIA QUERIES (RESPONSIVE ENGINE)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .edu-grid, .soft-skills-grid { grid-template-columns: 1fr !important; }
+    .hero-banner-frame { height: 280px; }
+    .profile-central-card { flex-direction: column; text-align: center; padding: 2.5rem 2rem; }
+    .modal-avatar-box { width: 160px; height: 160px; }
+    .hobby-meta { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+}
